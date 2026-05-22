@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Med3Core.PACC WebAPI 手動測試指南</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            padding: 2rem;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #1a56db;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        h2 {
+            color: #1e40af;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #dbeafe;
+        }
+        h3 {
+            color: #374151;
+            margin: 1.2rem 0 0.5rem;
+        }
+        .step {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .step-number {
+            display: inline-block;
+            background: #1a56db;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+        .step-title {
+            display: inline;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+        }
+        .inline-code {
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #dc2626;
+        }
+        .endpoint-card {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.2rem;
+            margin: 0.8rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .endpoint-name {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.3rem;
+        }
+        .method-badge {
+            display: inline-block;
+            background: #059669;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .success-box {
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .success-box strong { color: #065f46; }
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box strong { color: #92400e; }
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .info-box strong { color: #1e40af; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        tr:nth-child(even) { background: #f9fafb; }
+        footer {
+            text-align: center;
+            color: #9ca3af;
+            margin-top: 3rem;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>&#x1F3E5; Med3Core.PACC WebAPI</h1>
+    <p class="subtitle">手動測試指南 — Docker Desktop 本機環境</p>
+
+    <!-- ===== 前置條件 ===== -->
+    <h2>前置條件</h2>
+    <div class="step">
+        <ul>
+            <li>Windows 10/11 已安裝 <strong>Docker Desktop</strong>（已啟動）</li>
+            <li>.NET SDK 10.0 已安裝（僅需 build 時）</li>
+            <li>專案路徑：<span class="inline-code">C:\NHI\claude_nhi3\三代\PACC\Backend\</span></li>
+        </ul>
+    </div>
+
+    <!-- ===== Step 1: 啟動 ===== -->
+    <h2>Step 1：啟動服務</h2>
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">開啟 PowerShell，切換到專案目錄並啟動 Docker Compose</span>
+        <pre><code>cd C:\NHI\claude_nhi3\三代\PACC\Backend
+docker compose up -d --build</code></pre>
+        <div class="info-box">
+            <strong>&#x1F4A1; 說明：</strong>首次啟動需要 build image，約需 1-3 分鐘。後續啟動會使用快取。
+        </div>
+        <p>服務架構：</p>
+        <table>
+            <tr><th>服務</th><th>Port</th><th>說明</th></tr>
+            <tr><td>postgres</td><td>5432</td><td>PostgreSQL 16 資料庫</td></tr>
+            <tr><td>api</td><td>5100</td><td>PACC WebAPI (.NET 10)</td></tr>
+            <tr><td>smoke-test</td><td>—</td><td>自動化測試（啟動時自動跑）</td></tr>
+        </table>
+    </div>
+
+    <!-- ===== Step 2: 健康檢查 ===== -->
+    <h2>Step 2：確認服務就緒</h2>
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">等待約 10 秒後，執行健康檢查</span>
+        <pre><code>curl.exe http://localhost:5100/PACC/health</code></pre>
+        <div class="success-box">
+            <strong>&#x2705; 預期回傳：</strong><span class="inline-code">Healthy</span>
+        </div>
+        <div class="warning-box">
+            <strong>&#x26A0;&#xFE0F; 若回傳錯誤：</strong>等待 15 秒再試，或執行 <span class="inline-code">docker compose logs api</span> 檢查日誌。
+        </div>
+    </div>
+
+    <!-- ===== Step 3: API 測試 ===== -->
+    <h2>Step 3：測試 10 個 API 端點</h2>
+
+    <div class="info-box">
+        <strong>&#x1F4CC; Base URL：</strong><span class="inline-code">http://localhost:5100/PACC/pacc1000/PACC1001N01/</span><br>
+        <strong>&#x1F4CC; 成功判斷：</strong>回傳 JSON 中 <span class="inline-code">"rtnCode": "0"</span> 即表示成功。
+    </div>
+
+    <!-- Endpoint 1 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2460; CreateCase — 建立案件</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/CreateCase ^
+  -H "Content-Type: application/json" ^
+  -d "{\"apId\":\"IPLA0001\",\"hospId\":\"0101010010\",\"funcType\":\"1\",\"caseType\":\"A\"}"</code></pre>
+        <p>&#x1F4DD; 回傳的 <span class="inline-code">caseSeqNo</span> 值請記下，後續步驟需要使用。</p>
+    </div>
+
+    <!-- Endpoint 2 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2461; QueryStatus — 查詢案件狀態</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/QueryStatus ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\"}"</code></pre>
+    </div>
+
+    <!-- Endpoint 3 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2462; UpdateCaseStatus — 更新案件狀態</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/UpdateCaseStatus ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\",\"pgmId\":\"IPLA0001\",\"caseStatus\":\"1\"}"</code></pre>
+    </div>
+
+    <!-- Endpoint 4 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2463; CreateAttFile — 新增附件檔案</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/CreateAttFile ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\",\"itemNo\":1,\"fileName\":\"test.pdf\",\"fileSize\":1024}"</code></pre>
+    </div>
+
+    <!-- Endpoint 5 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2464; UpdateFileLocation — 更新檔案位置（以 S3 Object Key 為 Key）</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/UpdateFileLocation ^
+  -H "Content-Type: application/json" ^
+  -d "{\"objectKey\":\"pacc/2026/test.pdf\",\"fileStatus\":\"1\",\"s3Bucket\":\"nhi-pacc\"}"</code></pre>
+    </div>
+
+    <!-- Endpoint 6 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2465; QueryCaseFiles — 查詢案件檔案清單</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/QueryCaseFiles ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\"}"</code></pre>
+    </div>
+
+    <!-- Endpoint 7 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2466; CreateRecvLog — 建立接收紀錄</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/CreateRecvLog ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\",\"apId\":\"IPLB0001\",\"hospId\":\"0101010010\"}"</code></pre>
+        <p>&#x1F4DD; 回傳的 <span class="inline-code">recvSeqNo</span> 值請記下。</p>
+    </div>
+
+    <!-- Endpoint 8 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2467; UpdateRecvLog — 更新接收紀錄</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/UpdateRecvLog ^
+  -H "Content-Type: application/json" ^
+  -d "{\"recvSeqNo\":\"1\",\"procResult\":\"0\",\"procMsg\":\"OK\",\"fileSize\":2048,\"procTime\":\"20260522164200\",\"totalCount\":10}"</code></pre>
+    </div>
+
+    <!-- Endpoint 9 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2468; LogError — 記錄錯誤</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/LogError ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\",\"pgmId\":\"IPLA0001\",\"errorCode\":\"E001\",\"errorMsg\":\"Test error\"}"</code></pre>
+    </div>
+
+    <!-- Endpoint 10 -->
+    <div class="endpoint-card">
+        <div class="endpoint-name"><span class="method-badge">POST</span>&#x2469; UpdateCaseFiles — 更新案件檔案傳送狀態</div>
+        <pre><code>curl.exe -X POST http://localhost:5100/PACC/pacc1000/PACC1001N01/UpdateCaseFiles ^
+  -H "Content-Type: application/json" ^
+  -d "{\"caseSeqNo\":\"1\",\"fileSendStatus\":\"1\"}"</code></pre>
+    </div>
+
+    <!-- ===== Step 4: Swagger ===== -->
+    <h2>Step 4：Swagger UI 互動測試</h2>
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">使用瀏覽器開啟 Swagger 文件</span>
+        <pre><code>http://localhost:5100/PACC/swagger</code></pre>
+        <p>Swagger UI 提供互動式介面，可直接填寫參數並送出請求，適合探索 API。</p>
+    </div>
+
+    <!-- ===== Step 5: DB ===== -->
+    <h2>Step 5：查看資料庫（可選）</h2>
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">透過 Docker 進入 PostgreSQL 查看資料</span>
+        <pre><code># 查看案件處理記錄
+docker exec -it backend-postgres-1 psql -U pacc -d paccdb -c "SELECT * FROM iplt_file_proc_log;"
+
+# 查看接收紀錄
+docker exec -it backend-postgres-1 psql -U pacc -d paccdb -c "SELECT * FROM iple_recv_log;"
+
+# 查看附件檔案
+docker exec -it backend-postgres-1 psql -U pacc -d paccdb -c "SELECT * FROM ipli_exm_att_file;"
+
+# 查看接收附件檔案
+docker exec -it backend-postgres-1 psql -U pacc -d paccdb -c "SELECT * FROM nhi_idc.iple_recv_att_file;"</code></pre>
+    </div>
+
+    <!-- ===== Step 6: 停止 ===== -->
+    <h2>Step 6：停止服務</h2>
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">測試完畢，關閉所有容器</span>
+        <pre><code># 停止並移除容器（保留 volume）
+docker compose down
+
+# 若要清除資料庫資料（下次啟動重新初始化）
+docker compose down -v</code></pre>
+    </div>
+
+    <!-- ===== 端點總覽表 ===== -->
+    <h2>API 端點總覽</h2>
+    <div class="step">
+        <table>
+            <tr>
+                <th>#</th>
+                <th>端點名稱</th>
+                <th>功能說明</th>
+                <th>主要參數</th>
+            </tr>
+            <tr><td>1</td><td>CreateCase</td><td>建立新案件</td><td>apId, hospId, funcType, caseType</td></tr>
+            <tr><td>2</td><td>QueryStatus</td><td>查詢案件狀態</td><td>caseSeqNo</td></tr>
+            <tr><td>3</td><td>UpdateCaseStatus</td><td>更新案件狀態</td><td>caseSeqNo, pgmId, caseStatus</td></tr>
+            <tr><td>4</td><td>CreateAttFile</td><td>新增附件檔案記錄</td><td>caseSeqNo, itemNo, fileName, fileSize</td></tr>
+            <tr><td>5</td><td>UpdateFileLocation</td><td>以 S3 Key 更新檔案狀態</td><td>objectKey, fileStatus, s3Bucket</td></tr>
+            <tr><td>6</td><td>QueryCaseFiles</td><td>查詢案件所有檔案</td><td>caseSeqNo</td></tr>
+            <tr><td>7</td><td>CreateRecvLog</td><td>建立接收紀錄</td><td>caseSeqNo, apId, hospId</td></tr>
+            <tr><td>8</td><td>UpdateRecvLog</td><td>更新接收處理結果</td><td>recvSeqNo, procResult, procMsg</td></tr>
+            <tr><td>9</td><td>LogError</td><td>記錄處理錯誤</td><td>caseSeqNo, pgmId, errorCode, errorMsg</td></tr>
+            <tr><td>10</td><td>UpdateCaseFiles</td><td>批次更新檔案傳送狀態</td><td>caseSeqNo, fileSendStatus</td></tr>
+        </table>
+    </div>
+
+    <!-- ===== 常見問題 ===== -->
+    <h2>常見問題排除</h2>
+    <div class="step">
+        <h3>Q: 啟動後 health check 回傳連線失敗？</h3>
+        <p>A: API 需等待 PostgreSQL 就緒（約 5-10 秒）。若超過 30 秒仍失敗：</p>
+        <pre><code>docker compose logs api
+docker compose logs postgres</code></pre>
+
+        <h3>Q: 回傳 <span class="inline-code">"rtnCode": "500"</span>？</h3>
+        <p>A: 查看 API 日誌取得詳細錯誤：</p>
+        <pre><code>docker compose logs api --tail 50</code></pre>
+
+        <h3>Q: Port 5100 已被佔用？</h3>
+        <p>A: 修改 <span class="inline-code">docker-compose.yml</span> 中 api 服務的 ports 設定：</p>
+        <pre><code># 改為其他 port，例如 5200
+ports:
+  - "5200:8080"</code></pre>
+
+        <h3>Q: 想重新初始化資料庫？</h3>
+        <pre><code>docker compose down -v
+docker compose up -d</code></pre>
+    </div>
+
+    <footer>
+        <p>Med3Core.PACC WebAPI v1.0 | GitHub: <a href="https://github.com/IISI-0901076/Med3Core.PACC">IISI-0901076/Med3Core.PACC</a></p>
+        <p>Generated: 2026-05-22</p>
+    </footer>
+</div>
+</body>
+</html>
