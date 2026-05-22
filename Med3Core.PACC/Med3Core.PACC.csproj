@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>pacc-1001-9e2d-4f08-9576-903804a3227b</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+		<!-- 啟用所有分析器 -->
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+		<!-- 將程式碼樣式警告視為錯誤 (可選) -->
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+		<!-- 或只針對特定警告 -->
+		<WarningsAsErrors>IDE1006</WarningsAsErrors>
+		<WarningsNotAsErrors>NU1603;NU1803</WarningsNotAsErrors>
+
+		<!-- 啟用 .NET 分析器 -->
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>latest</AnalysisLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Repositories\Mongo\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <!-- 本機 shim 取代內部 NuGet（正式部署時還原 Bootstrapper.Common） -->
+	  <ProjectReference Include="..\Med3Core.PACC.Shims\Med3Core.PACC.Shims.csproj" />
+	  <PackageReference Include="Npgsql" Version="8.0.6" />
+	  <PackageReference Include="Dapper" Version="2.1.66" />
+	  <PackageReference Include="FluentValidation" Version="11.10.0" />
+	  <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+	  <PackageReference Include="NLog" Version="5.3.4" />
+	  <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.14" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+	</ItemGroup>
+
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties properties_4launchsettings_1json__JsonSchema="" />
+		</VisualStudio>
+	</ProjectExtensions>
+
+</Project>

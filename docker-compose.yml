@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: pacc
+      POSTGRES_USER: pacc
+      POSTGRES_PASSWORD: pacc
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pacc -d pacc"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Med3Core.PACC/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Database__Provider: Postgres
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=pacc;Username=pacc;Password=pacc"
+      EnableSwagger: "true"
+      PgmId: Med3Core.PACC.Service
+      BusCode: PACC
+      PodId: Med3Core.PACC.Service
+      OpenTelemetryResource: Med3Core.PACC
+      logDirectory: /var/log/pacc
+      kafkaBroker: ""
+      kafkaTopic_aplog: aplog
+      kafkaTopic_auditlog: auditlog
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
+  smoke-test:
+    image: curlimages/curl:8.10.1
+    entrypoint: ["/bin/sh", "/smoke/run.sh"]
+    environment:
+      API_BASE: "http://api:8080"
+    volumes:
+      - ./smoke:/smoke:ro
+    depends_on:
+      api:
+        condition: service_healthy

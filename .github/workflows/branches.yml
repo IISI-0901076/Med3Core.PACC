@@ -1,0 +1,17 @@
+name: RELEASE Workflow
+on:
+  pull_request:
+    branches:
+      - 'DEV-RELEASE'
+      - 'SIT-RELEASE'
+    types:
+      - closed
+jobs:
+  Main-Workflow:
+    uses: CICD/cicd-workflows/.github/workflows/main-controll-workflow.yml@main
+    with:
+      TARGET_REPOSITORY: ${{ github.repository }}
+      TARGET_REF: ${{ github.ref_name }}
+      TARGET_SHA: ${{ github.sha }}
+    secrets:
+      DEPLOY_LOCATION_INFO: ${{ secrets.DEPLOY_LOCATION_INFO }}

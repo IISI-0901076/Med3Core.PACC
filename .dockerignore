@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/.vs/
+*.user
+*.suo
+.git/
+Med3Core.PACC.Test/

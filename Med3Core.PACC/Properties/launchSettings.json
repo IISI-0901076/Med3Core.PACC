@@ -1,0 +1,70 @@
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "PACC/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        // Key Cloak 及相關設定
+        "grant_type": "client_credentials",
+        "client_id": "pacc-client",
+        "scope": "pacc-scope",
+        "client_secret": "pacc-client-secret",
+        "KeycloakUrl": "https://med3keycloakdev.intra.nhi.gov.tw/realms/NHI/protocol/openid-connect/token",
+        // DBCCC 相關設定
+        "networkSegment": "IDC",
+        "ConnectionId": "HMD-O3HC",
+        "DBAPI_BASEURL": "https://med3appdev.intra.nhi.gov.tw/",
+        // S3 相關設定
+        "S3KeycloakClientId": "ieawc-client",
+        "S3KeycloakScope": "ieawc-scope",
+        "S3KeycloakClientSecret": "WkMp21MW4ZVgq6wK66CwS7h3Gp8Gkg2Q",
+        "S3ApiUrl": "https://med3apimddev.intra.nhi.gov.tw/IEACC1103N01",
+        "TKC_NAME": "T",
+        // 基本設定
+        "logDirectory": "D:\\Log\\pacc",
+        "PgmId": "Med3Core.PACC.Service",
+        "BusCode": "PACC",
+        "EnableSwagger": "true",
+        "PodId": "Med3Core.PACC.Service",
+        "TemplateFileDirctory": "D:\\temp\\upload",
+        "CertificateFilePath": "D:\\temp\\certs",
+        // Kafka, Log 相關
+        "kafkaBroker": "192.168.242.59:9092",
+        "kafkaTopic_aplog": "aplog",
+        "kafkaTopic_auditlog": "auditlog",
+        "OpenTelemetryResource": "Med3Core.PACC",
+        "OTLP_ENDPOINT": "http://192.168.242.26:4317",
+        "JAEGER_HOST": "192.168.242.26:6831",
+        "MongoMeter": "NoMongo",
+        // 遠端服務相關
+        "Redisconnection": "192.168.84.74:6379,abortConnect=false,password=2wsx#EDC4rfv,defaultDatabase=0",
+        "KongUrl": "https://med3apimddev.intra.nhi.gov.tw",
+        "ApiBaseUrl": "https://med3appdev.intra.nhi.gov.tw/",
+        "ICMUrl": "/ICMNCSVR/ICMNC9801M01",
+        // 是否繞過憑證驗證（true:繞過，false:不繞過）
+        "BYPASS_HTTPS_CERTIFICATE": "false",
+        // 排程時間，單位: 秒
+        "ConnectionSeconds": "86400", // 24小時
+        "TaskManagementSeconds": "30", // 30秒
+        "TokenRefreshSeconds": "900", // 15分鐘
+        "CheckFilesInterval": "86400", // 24小時
+        "DeleteFilesOlderThan": "14", // 刪除14天前的檔案
+        "CheckCertificateSeconds": "300", // 5分鐘
+        "RefreshCodeSeconds": "3600" // 1小時
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5251"
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:19083",
+      "sslPort": 44387
+    }
+  }
+}

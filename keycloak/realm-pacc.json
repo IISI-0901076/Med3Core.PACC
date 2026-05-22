@@ -1,0 +1,49 @@
+{
+  "realm": "pacc",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "pacc-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "pacc-client-secret",
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "defaultClientScopes": ["pacc-scope"],
+      "optionalClientScopes": []
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "pacc-scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "pacc-test",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "pacc-test",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["pacc-user"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "pacc-user",
+        "description": "PACC service user role"
+      }
+    ]
+  }
+}

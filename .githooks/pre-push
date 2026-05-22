@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+echo "======================================"
+echo "Pre-push checks"
+echo "======================================"
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT" || exit 1
+
+# 1️⃣ NuGet whitelist check
+echo ""
+echo "🔍 Checking NuGet whitelist..."
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/check-nuget-whitelist.ps1
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo ""
+  echo "❌ NuGet whitelist check failed. Push aborted."
+  echo ""
+  exit 1
+fi
+
+echo "✅ NuGet whitelist check passed."
+
+# 2️⃣ Unit tests
+echo ""
+echo "🧪 Running unit tests..."
+#dotnet test ./HMAVC2000-Backend.sln
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo ""
+  echo "❌ Unit tests failed. Push aborted."
+  echo ""
+  exit 1
+fi
+
+echo ""
+echo "✅ Unit tests passed. Continue push."
+echo ""
+exit 0
+
+
